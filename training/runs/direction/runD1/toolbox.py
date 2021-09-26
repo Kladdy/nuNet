@@ -123,7 +123,7 @@ def get_pred_angle_diff_data(run_name):
 def find_68_interval(run_name):
     angle_difference_data = get_pred_angle_diff_data(run_name)
 
-    angle_68 = calculate_percentage_interval(angle_difference_data, 68)
+    angle_68 = calculate_percentage_interval(angle_difference_data, 0.68)
 
     return angle_68
 
