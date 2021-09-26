@@ -8,7 +8,7 @@ import pickle
 from scipy import stats
 from radiotools import helper as hp
 from NuRadioReco.utilities import units
-from toolbox import load_file, calculate_percentage_interval, get_pred_angle_diff_data
+from toolbox import load_file, calculate_percentage_interval, get_pred_angle_diff_data, models_dir
 import argparse
 from termcolor import colored
 from constants import datapath, data_filename, label_filename, plots_dir

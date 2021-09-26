@@ -107,7 +107,7 @@ def calculate_percentage_interval(angle_difference_data, percentage=0.68):
     return angle
 
 def get_pred_angle_diff_data(run_name):
-    prediction_file = f'saved_models/model.{run_name}.h5_predicted.pkl'
+    prediction_file = f'{models_dir(run_name)}/model.{run_name}.h5_predicted.pkl'
     with open(prediction_file, "br") as fin:
         nu_direction_predict, nu_direction = pickle.load(fin)
 
