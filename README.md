@@ -4,10 +4,26 @@ nuNet is a convolutional neural network platform for reconstructing neutrino pro
 
 ## Folder structure
 
-TBD
+    .
+    ├── ...
+    ├── training                # directory for training code
+    │   └── runs                
+    │       ├── direction       
+    │       │   ├── archive     
+    │       │   ├── base
+    │       │   └── runD[n]     # n = 1, 2, 3, ...
+    │       ├── energy
+    │       │   ├── archive
+    │       │   ├── base
+    │       │   └── runE[n]     # n = 1, 2, 3, ...
+    │       └── flavour
+    │           ├── archive
+    │           ├── base
+    │           └── runF[n]     # n = 1, 2, 3, ...
+    └── ...
+
 
 ## Packages
-
 
 
 ## Association
