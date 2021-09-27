@@ -12,7 +12,7 @@ for device in physical_devices:
 import matplotlib.pyplot as plt
 import numpy as np
 from constants import plots_dir, datapath, data_filename, label_filename, test_file_ids, run_version
-from toolbox import get_pred_angle_diff_data, load_file_all_properties
+from toolbox import get_pred_angle_diff_data, load_file_all_properties, models_dir
 import sys
 import argparse
 import os
