@@ -289,3 +289,6 @@ common/models
 
 # wandb
 wandb/
+
+# plots
+plots/
