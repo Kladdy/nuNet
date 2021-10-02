@@ -36,7 +36,7 @@ import tensorflow.keras.backend as K
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger
 
 from generator import TrainDataset, ValDataset, n_events_per_file, n_files_train, batch_size
-from constants import run_version, dataset_name, datapath, data_filename, label_filename, plots_dir, project_name, n_files_val
+from constants import run_version, dataset_name, datapath, data_filename, label_filename, plots_dir, project_name, n_files, n_files_val, dataset_em, dataset_noise, test_file_ids
 # -------
 
 # Values
@@ -89,6 +89,17 @@ run = wandb.init(project=project_name,
 run.name = run_name
 config = wandb.config
     
+# Send dataset params to wandb
+wandb.log({f"dataset_name": dataset_name})
+wandb.log({f"dataset_em": dataset_em})
+wandb.log({f"dataset_noise": dataset_noise})
+wandb.log({f"test_file_ids": test_file_ids})
+wandb.log({f"datapath": datapath})
+wandb.log({f"data_filename": data_filename})
+wandb.log({f"label_filename": label_filename})
+wandb.log({f"n_files": n_files})
+wandb.log({f"n_files_val": n_files_val})
+
 # Model params
 conv2D_filter_size = 5
 pooling_size = 4
