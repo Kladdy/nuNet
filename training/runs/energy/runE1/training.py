@@ -90,15 +90,15 @@ run.name = run_name
 config = wandb.config
     
 # Send dataset params to wandb
-wandb.log({f"dataset_name": dataset_name})
-wandb.log({f"dataset_em": dataset_em})
-wandb.log({f"dataset_noise": dataset_noise})
-wandb.log({f"test_file_ids": test_file_ids})
-wandb.log({f"datapath": datapath})
-wandb.log({f"data_filename": data_filename})
-wandb.log({f"label_filename": label_filename})
-wandb.log({f"n_files": n_files})
-wandb.log({f"n_files_val": n_files_val})
+wandb.log({f"dataset_name": dataset_name,
+            f"dataset_em": dataset_em,
+            f"dataset_noise": dataset_noise,
+            f"test_file_ids": test_file_ids,
+            f"datapath": datapath,
+            f"data_filename": data_filename,
+            f"label_filename": label_filename,
+            f"n_files": n_files,
+            f"n_files_val": n_files_val })
 
 # Model params
 conv2D_filter_size = 5
