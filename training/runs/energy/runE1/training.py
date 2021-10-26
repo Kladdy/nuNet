@@ -106,6 +106,7 @@ pooling_size = 4
 amount_Conv2D_layers_per_block = 3 
 amount_Conv2D_blocks = 4
 conv2D_filter_amount = 32
+activation_function = "relu"
 
 # Send model params to wandb
 wandb.log({f"conv2D_filter_amount": conv2D_filter_amount})
@@ -113,15 +114,16 @@ wandb.log({f"conv2D_filter_size": conv2D_filter_size})
 wandb.log({f"pooling_size": pooling_size})
 wandb.log({f"amount_Conv2D_blocks": amount_Conv2D_blocks})
 wandb.log({f"amount_Conv2D_layers_per_block": amount_Conv2D_layers_per_block})
+wandb.log({f"activation_function": activation_function})
 
 # ----------- Create model -----------
 model = Sequential()
 
 # Conv2D block 1
-model.add(Conv2D(conv2D_filter_amount, (1, conv2D_filter_size), strides=(1, 1), padding='same', activation='relu', input_shape=(5, 512, 1)))
+model.add(Conv2D(conv2D_filter_amount, (1, conv2D_filter_size), strides=(1, 1), padding='same', activation=activation_function, input_shape=(5, 512, 1)))
 
 for _ in range(amount_Conv2D_layers_per_block-1):
-    model.add(Conv2D(conv2D_filter_amount, (1, conv2D_filter_size), strides=(1, 1), padding='same', activation='relu'))
+    model.add(Conv2D(conv2D_filter_amount, (1, conv2D_filter_size), strides=(1, 1), padding='same', activation=activation_function))
 
 # MaxPooling to reduce size
 model.add(AveragePooling2D(pool_size=(1, pooling_size)))
@@ -129,7 +131,7 @@ model.add(AveragePooling2D(pool_size=(1, pooling_size)))
 for i in range(amount_Conv2D_blocks-1):
     # Conv2D block
     for _ in range(amount_Conv2D_layers_per_block):
-        model.add(Conv2D(conv2D_filter_amount*2**(i+1), (1, conv2D_filter_size), strides=(1, 1), padding='same', activation='relu'))
+        model.add(Conv2D(conv2D_filter_amount*2**(i+1), (1, conv2D_filter_size), strides=(1, 1), padding='same', activation=activation_function))
 
     # MaxPooling to reduce size
     model.add(AveragePooling2D(pool_size=(1, pooling_size)))
@@ -141,17 +143,17 @@ model.add(BatchNormalization())
 model.add(Flatten())
 
 # Dense layers (fully connected)
-model.add(Dense(1024, activation='relu'))
-model.add(Dense(1024, activation='relu'))
-model.add(Dense(512, activation='relu'))
-model.add(Dense(256, activation='relu'))
-model.add(Dense(128, activation='relu'))
+model.add(Dense(1024, activation=activation_function))
+model.add(Dense(1024, activation=activation_function))
+model.add(Dense(512, activation=activation_function))
+model.add(Dense(256, activation=activation_function))
+model.add(Dense(128, activation=activation_function))
 
-# model.add(Dense(512, activation='relu'))
+# model.add(Dense(512, activation=activation_function))
 # # model.add(Dropout(.1))
-# model.add(Dense(256, activation='relu'))
+# model.add(Dense(256, activation=activation_function))
 # # model.add(Dropout(.1))
-# model.add(Dense(128, activation='relu'))
+# model.add(Dense(128, activation=activation_function))
 # # model.add(Dropout(.1))
 
 # Output layer
