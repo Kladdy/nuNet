@@ -12,7 +12,7 @@ for device in physical_devices:
 import matplotlib.pyplot as plt
 import numpy as np
 from constants import plots_dir, dataset
-from toolbox import get_pred_angle_diff_data, calculate_percentage_interval, load_file_all_properties
+from toolbox import get_pred_angle_diff_data, calculate_percentage_interval, load_file_all_properties, models_dir
 import sys
 import argparse
 import os
