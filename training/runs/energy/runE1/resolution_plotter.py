@@ -12,7 +12,7 @@ for device in physical_devices:
 import matplotlib.pyplot as plt
 import numpy as np
 from constants import plots_dir, datapath, data_filename, label_filename, test_file_ids, run_version
-from toolbox import get_pred_angle_diff_data, load_file_all_properties, models_dir
+from toolbox import get_pred_energy_diff_data, load_file_all_properties, models_dir
 import sys
 import argparse
 import os
@@ -29,7 +29,7 @@ from radiotools import helper as hp
 # -------
 
 # Parse arguments
-parser = argparse.ArgumentParser(description='Plot resolution as a function of different parameters')
+parser = argparse.ArgumentParser(description='Plot energy resolution as a function of different parameters')
 parser.add_argument("run_id", type=str ,help="the id of the run to be analyzed, eg '3.2' for run3.2")
 
 args = parser.parse_args()
@@ -38,7 +38,7 @@ run_id = args.run_id
 # Save the run name
 run_name = f"run{run_id}"
 
-print(colored(f"Plotting resolution as function of neutrino signal properties for {run_name}...", "yellow"))
+print(colored(f"Plotting energy resolution as function of neutrino signal properties for {run_name}...", "yellow"))
 
 # Make sure run_name is compatible with run_version
 this_run_version = run_name.split(".")[0]
@@ -79,8 +79,8 @@ if len(test_file_ids) > 1:
             shower_energy = np.concatenate((shower_energy, shower_energy_tmp))
 
 
-# Get angle difference data
-angle_difference_data = get_pred_angle_diff_data(run_name)
+# Get energy difference data
+energy_difference_data = get_pred_energy_diff_data(run_name)
 
 # --------- Energy plotting ---------
 # Create figure
@@ -90,12 +90,12 @@ fig_energy = plt.figure()
 ax = fig_energy.add_subplot(1, 1, 1)
 nu_energy_bins = np.logspace(np.log10(1e17),np.log10(1e19), 30)
 nu_energy_bins_with_one_extra = np.append(np.logspace(np.log10(1e17),np.log10(1e19), 30), [1e20])
-binned_resolution_nu_energy = stats.binned_statistic(nu_energy, angle_difference_data, bins = nu_energy_bins_with_one_extra)[0]
+binned_resolution_nu_energy = stats.binned_statistic(nu_energy, energy_difference_data, bins = nu_energy_bins_with_one_extra)[0]
 
 ax.plot(nu_energy_bins, binned_resolution_nu_energy, "o")
 # ax.set_ylim(0, 0.4)
 ax.set_xlabel("true nu energy (eV)")
-ax.set_ylabel("angular resolution (°)")
+ax.set_ylabel("log10 energy difference (1)")
 ax.set_xscale('log')
 
 
@@ -103,9 +103,9 @@ ax.set_xscale('log')
 # ax.plot(nu_energy, angle_difference_data, 'o')
 # ax.set_xscale('log')
 
-plt.title(f"Mean resolution as a function of nu_energy for {run_name}")
+plt.title(f"Mean log10 energy difference as a function of nu_energy for {run_name}")
 fig_energy.tight_layout()
-fig_energy.savefig(f"{plots_dir}/mean_resolution_nu_energy_{run_name}.png")
+fig_energy.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_energy_{run_name}.png")
 # ___________________________________
 
 # --------- Energy count plotting ---------
@@ -114,7 +114,7 @@ fig_energy_count = plt.figure()
 
 # Calculate binned statistics
 ax = fig_energy_count.add_subplot(1, 1, 1)
-binned_resolution_nu_energy_count = stats.binned_statistic(nu_energy, angle_difference_data, bins = nu_energy_bins_with_one_extra, statistic = "count")[0]
+binned_resolution_nu_energy_count = stats.binned_statistic(nu_energy, energy_difference_data, bins = nu_energy_bins_with_one_extra, statistic = "count")[0]
 
 ax.plot(nu_energy_bins, binned_resolution_nu_energy_count, "o")
 # ax.set_ylim(0, 0.4)
@@ -124,7 +124,7 @@ ax.set_xscale('log')
 
 plt.title(f"Count of events inside bins as a function of nu_energy for {run_name}")
 fig_energy_count.tight_layout()
-fig_energy_count.savefig(f"{plots_dir}/mean_resolution_nu_energy_count_{run_name}.png")
+fig_energy_count.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_energy_count_{run_name}.png")
 # ___________________________________
 
 # --------- Azimuth plotting ---------
@@ -135,17 +135,17 @@ fig_azimuth = plt.figure()
 ax = fig_azimuth.add_subplot(1, 1, 1)
 nu_azimuth_bins = np.linspace(0,2*np.pi, 30)
 nu_azimuth_bins_with_one_extra = np.append(np.linspace(0,2*np.pi, 30), 2*np.pi+1)
-binned_resolution_nu_azimuth = stats.binned_statistic(nu_azimuth, angle_difference_data, bins = nu_azimuth_bins_with_one_extra)[0]
+binned_resolution_nu_azimuth = stats.binned_statistic(nu_azimuth, energy_difference_data, bins = nu_azimuth_bins_with_one_extra)[0]
 
 ax.plot(nu_azimuth_bins / units.deg, binned_resolution_nu_azimuth, "o")
 # ax.set_ylim(0, 0.4)
 ax.set_xlabel("true neutrino direction azimuth angle (°)")
-ax.set_ylabel("angular resolution (°)")
+ax.set_ylabel("log10 energy difference (1)")
 
 
 plt.title(f"Mean resolution as a function of nu_azimuth for {run_name}")
 fig_azimuth.tight_layout()
-fig_azimuth.savefig(f"{plots_dir}/mean_resolution_nu_azimuth_{run_name}.png")
+fig_azimuth.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_azimuth_{run_name}.png")
 # ___________________________________
 
 # --------- Azimuth count plotting ---------
@@ -155,7 +155,7 @@ fig_azimuth_count = plt.figure()
 # Calculate binned statistics
 ax = fig_azimuth_count.add_subplot(1, 1, 1)
 
-binned_resolution_nu_azimuth_count = stats.binned_statistic(nu_azimuth, angle_difference_data, bins = nu_azimuth_bins_with_one_extra, statistic = "count")[0]
+binned_resolution_nu_azimuth_count = stats.binned_statistic(nu_azimuth, energy_difference_data, bins = nu_azimuth_bins_with_one_extra, statistic = "count")[0]
 
 ax.plot(nu_azimuth_bins / units.deg, binned_resolution_nu_azimuth_count, "o")
 # ax.set_ylim(0, 0.4)
@@ -165,7 +165,7 @@ ax.set_ylabel("count")
 
 plt.title(f"Count of events inside bins as a function of nu_azimuth for {run_name}")
 fig_azimuth_count.tight_layout()
-fig_azimuth_count.savefig(f"{plots_dir}/mean_resolution_nu_azimuth_count_{run_name}.png")
+fig_azimuth_count.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_azimuth_count_{run_name}.png")
 # ___________________________________
 
 
@@ -177,16 +177,16 @@ fig_zenith = plt.figure()
 ax = fig_zenith.add_subplot(1, 1, 1)
 nu_zenith_bins = np.linspace(0,np.pi, 30)
 nu_zenith_bins_with_one_extra = np.append(np.linspace(0,np.pi, 30), np.pi+1)
-binned_resolution_nu_zenith = stats.binned_statistic(nu_zenith, angle_difference_data, bins = nu_zenith_bins_with_one_extra)[0]
+binned_resolution_nu_zenith = stats.binned_statistic(nu_zenith, energy_difference_data, bins = nu_zenith_bins_with_one_extra)[0]
 
 ax.plot(nu_zenith_bins / units.deg, binned_resolution_nu_zenith, "o")
 # ax.set_ylim(0, 0.4)
 ax.set_xlabel("true neutrino direction zenith angle (°)")
-ax.set_ylabel("angular resolution (°)")
+ax.set_ylabel("log10 energy difference (1)")
 
 plt.title(f"Mean resolution as a function of nu_zenith for {run_name}")
 fig_zenith.tight_layout()
-fig_zenith.savefig(f"{plots_dir}/mean_resolution_nu_zenith_{run_name}.png")
+fig_zenith.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_zenith_{run_name}.png")
 # ___________________________________
 
 # --------- Zenith count plotting ---------
@@ -195,7 +195,7 @@ fig_zenith_count = plt.figure()
 
 # Calculate binned statistics
 ax = fig_zenith_count.add_subplot(1, 1, 1)
-binned_resolution_nu_zenith_count = stats.binned_statistic(nu_zenith, angle_difference_data, bins = nu_zenith_bins_with_one_extra, statistic = "count")[0]
+binned_resolution_nu_zenith_count = stats.binned_statistic(nu_zenith, energy_difference_data, bins = nu_zenith_bins_with_one_extra, statistic = "count")[0]
 
 ax.plot(nu_zenith_bins / units.deg, binned_resolution_nu_zenith_count, "o")
 # ax.set_ylim(0, 0.4)
@@ -204,7 +204,7 @@ ax.set_ylabel("count")
 
 plt.title(f"Count of events inside bins as a function of nu_zenith for {run_name}")
 fig_zenith_count.tight_layout()
-fig_zenith_count.savefig(f"{plots_dir}/mean_resolution_nu_zenith_count_{run_name}.png")
+fig_zenith_count.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_zenith_count_{run_name}.png")
 # ___________________________________
 
 # --------- SNR plotting ---------
@@ -219,16 +219,16 @@ ax = fig_SNR.add_subplot(1, 1, 1)
 SNR_means = np.arange(0.5, 20.5, 2)
 SNR_bins = np.append(np.arange(0, 20, 2), [10000])
 
-binned_resolution_SNR_mean = stats.binned_statistic(max_LPDA[:, 0] / 10., angle_difference_data, bins=SNR_bins)[0]
+binned_resolution_SNR_mean = stats.binned_statistic(max_LPDA[:, 0] / 10., energy_difference_data, bins=SNR_bins)[0]
 
 ax.plot(SNR_means, binned_resolution_SNR_mean, "o")
 # ax.set_ylim(0, 0.4)
 ax.set_xlabel("SNR")
-ax.set_ylabel("angular resolution (°)")
+ax.set_ylabel("log10 energy difference (1)")
 
 plt.title(f"Mean resolution as a function of SNR for {run_name}")
 fig_SNR.tight_layout()
-fig_SNR.savefig(f"{plots_dir}/mean_resolution_SNR_{run_name}.png")
+fig_SNR.savefig(f"{plots_dir}/mean_log10_energy_difference_SNR_{run_name}.png")
 # ___________________________________
 
 # --------- SNR count plotting ---------
@@ -238,7 +238,7 @@ fig_SNR_count = plt.figure()
 # Calculate binned statistics
 ax = fig_SNR_count.add_subplot(1, 1, 1)
 
-binned_resolution_SNR_mean_count = stats.binned_statistic(max_LPDA[:, 0] / 10., angle_difference_data, bins=SNR_bins, statistic = "count")[0]
+binned_resolution_SNR_mean_count = stats.binned_statistic(max_LPDA[:, 0] / 10., energy_difference_data, bins=SNR_bins, statistic = "count")[0]
 
 ax.plot(SNR_means, binned_resolution_SNR_mean_count, "o")
 # ax.set_ylim(0, 0.4)
@@ -247,7 +247,7 @@ ax.set_ylabel("count")
 
 plt.title(f"Count of events inside bins as a function of SNR for {run_name}")
 fig_SNR_count.tight_layout()
-fig_SNR_count.savefig(f"{plots_dir}/mean_resolution_SNR_count_{run_name}.png")
+fig_SNR_count.savefig(f"{plots_dir}/mean_log10_energy_difference_SNR_count_{run_name}.png")
 # ___________________________________
 
 print(colored(f"Plotting angular resolution depending on properties for {run_name}!", "green", attrs=["bold"]))

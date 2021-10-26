@@ -240,9 +240,11 @@ os.system(f"python resolution_plotter.py {run_id}")
 ang_res_nu_enegy_image = Image.open(f"{plots_dir}/mean_resolution_nu_energy_{run_name}.png")
 ang_res_SNR_image = Image.open(f"{plots_dir}/mean_resolution_SNR_{run_name}.png")
 ang_res_nu_zenith_image = Image.open(f"{plots_dir}/mean_resolution_nu_zenith_{run_name}.png")
+ang_res_nu_azimuth_image = Image.open(f"{plots_dir}/mean_resolution_nu_azimuth_{run_name}.png")
 wandb.log({"angular_resolution_nu_energy": [wandb.Image(ang_res_nu_enegy_image, caption=f"Angular resolution over nu_energy for {run_name}")]})
 wandb.log({"angular_resolution_snr": [wandb.Image(ang_res_SNR_image, caption=f"Angular resolution over SNR for {run_name}")]})
 wandb.log({"angular_resolution_nu_zenith": [wandb.Image(ang_res_nu_zenith_image, caption=f"Angular resolution nu_zenith for {run_name}")]})
+wandb.log({"angular_resolution_nu_azimuth": [wandb.Image(ang_res_nu_azimuth_image, caption=f"Angular resolution nu_azimuth for {run_name}")]})
 
 run.join()
 

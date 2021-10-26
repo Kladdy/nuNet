@@ -119,7 +119,6 @@ def get_pred_energy_diff_data(run_name):
     # N = 100000
     # nu_direction_predict = nu_direction_predict[:N]
     # nu_direction = nu_direction[:N]
-    print("get pred energy data shape:")
     energy_difference_data = np.array([ shower_energy_log10_predict[i] - shower_energy_log10[i] for i in range(len(shower_energy_log10))])
 
     return energy_difference_data

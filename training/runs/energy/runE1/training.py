@@ -229,18 +229,19 @@ energy_68 = find_68_interval(run_name)
 wandb.log({f"68 % interval": energy_68})
 
 # Send angular resolution image to wandb
-ang_res_image = Image.open(f"{plots_dir}/energy_resolution_{run_name}.png")
-wandb.log({"energy_resolution": [wandb.Image(ang_res_image, caption=f"energy resolution for {run_name}")]})
+energy_res_image = Image.open(f"{plots_dir}/energy_resolution_{run_name}.png")
+wandb.log({"energy_resolution": [wandb.Image(energy_res_image, caption=f"energy resolution for {run_name}")]})
 
-# TODO: Implement this
 # Plot resolution as a function of SNR, energy and azimuth and send to wandb
-# os.system(f"python resolution_plotter.py {run_id}")
-# ang_res_nu_enegy_image = Image.open(f"{plots_dir}/mean_resolution_nu_energy_{run_name}.png")
-# ang_res_SNR_image = Image.open(f"{plots_dir}/mean_resolution_SNR_{run_name}.png")
-# ang_res_nu_zenith_image = Image.open(f"{plots_dir}/mean_resolution_nu_zenith_{run_name}.png")
-# wandb.log({"angular_resolution_nu_energy": [wandb.Image(ang_res_nu_enegy_image, caption=f"Angular resolution over nu_energy for {run_name}")]})
-# wandb.log({"angular_resolution_snr": [wandb.Image(ang_res_SNR_image, caption=f"Angular resolution over SNR for {run_name}")]})
-# wandb.log({"angular_resolution_nu_zenith": [wandb.Image(ang_res_nu_zenith_image, caption=f"Angular resolution nu_zenith for {run_name}")]})
+os.system(f"python resolution_plotter.py {run_id}")
+log10_energy_diff_nu_enegy_image = Image.open(f"{plots_dir}/mean_log10_energy_difference_nu_energy_{run_name}.png")
+log10_energy_diff_SNR_image = Image.open(f"{plots_dir}/mean_log10_energy_difference_SNR_{run_name}.png")
+log10_energy_diff_nu_zenith_image = Image.open(f"{plots_dir}/mean_log10_energy_difference_nu_zenith_{run_name}.png")
+log10_energy_diff_nu_azimuth_image = Image.open(f"{plots_dir}/mean_log10_energy_difference_nu_azimuth_{run_name}.png")
+wandb.log({"angular_log10_energy_difference_nu_energy": [wandb.Image(log10_energy_diff_nu_enegy_image, caption=f"Angular resolution over nu_energy for {run_name}")]})
+wandb.log({"angular_log10_energy_difference_snr": [wandb.Image(log10_energy_diff_SNR_image, caption=f"Angular resolution over SNR for {run_name}")]})
+wandb.log({"angular_log10_energy_difference_nu_zenith": [wandb.Image(log10_energy_diff_nu_zenith_image, caption=f"Angular resolution nu_zenith for {run_name}")]})
+wandb.log({"angular_log10_energy_difference_nu_azimuth": [wandb.Image(log10_energy_diff_nu_azimuth_image, caption=f"Angular resolution nu_azimuth for {run_name}")]})
 
 run.join()
 
