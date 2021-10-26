@@ -6,27 +6,29 @@ nuNet is a convolutional neural network platform for reconstructing neutrino pro
 
     .
     ├── ...
-    ├── common
+    ├── common                  # directory with tools, models, ...
     │   ├── bandpass_filters
-    │   └── models
-    │       ├── runD[n]
-    │       ├── runE[n]
-    │       └── runF[n]
-    │   training
+    │   ├── models
+    │   │   ├── runD[n]         #  
+    │   │   ├── runE[n]         # saved models from training sessions
+    │   │   └── runF[n]         #
+    │   └── tools
+    │       └── start_training  # tools for running training sessions
+    │
     ├── training                # directory for training code
     │   └── runs                
     │       ├── direction       
-    │       │   ├── archive     
-    │       │   ├── base
+    │       │   ├── archive     # directory for archived runs and bases
+    │       │   ├── base        # directory for bases 
     │       │   └── runD[n]     # n = 1, 2, 3, ...
     │       ├── energy
-    │       │   ├── archive
-    │       │   ├── base
-    │       │   └── runE[n]     # n = 1, 2, 3, ...
+    │       │   ├── archive     #      
+    │       │   ├── base        # ──── || ────
+    │       │   └── runE[n]     #      
     │       └── flavour
-    │           ├── archive
-    │           ├── base
-    │           └── runF[n]     # n = 1, 2, 3, ...
+    │           ├── archive     #
+    │           ├── base        # ──── || ────
+    │           └── runF[n]     #
     └── ...
 
 
