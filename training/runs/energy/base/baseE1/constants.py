@@ -1,7 +1,7 @@
 import datasets
 
 project_name = "nuNet"
-run_version = "baseD2"
+run_version = "baseE1"
 dataset_name = "SouthPole"
 
 # Dataset setup
@@ -13,7 +13,7 @@ dataset_name = "SouthPole"
 #     noise:
 #         True (default) / False
 dataset_name = "ARZ"
-dataset_em = False
+dataset_em = True
 dataset_noise = True
 
 dataset = datasets.Dataset(dataset_name, dataset_em, dataset_noise)
