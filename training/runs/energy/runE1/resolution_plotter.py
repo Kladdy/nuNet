@@ -82,173 +82,188 @@ if len(test_file_ids) > 1:
 # Get energy difference data
 energy_difference_data = get_pred_energy_diff_data(run_name)
 
+delta_log_E_string = r"$\Delta(\log_{10}\:E)$"
+
 # --------- Energy plotting ---------
-# Create figure
-fig_energy = plt.figure()
+def plot_energy(statistics):
+    assert statistics in ["mean", "std", "count"]
 
-# Calculate binned statistics
-ax = fig_energy.add_subplot(1, 1, 1)
-nu_energy_bins = np.logspace(np.log10(1e17),np.log10(1e19), 30)
-nu_energy_bins_with_one_extra = np.append(np.logspace(np.log10(1e17),np.log10(1e19), 30), [1e20])
-binned_resolution_nu_energy = stats.binned_statistic(nu_energy, energy_difference_data, bins = nu_energy_bins_with_one_extra)[0]
+    xlabel = "true nu energy (eV)"
+    xscale = 'log'
+    yscale = 'linear'
+    filename = f"{plots_dir}/{statistics}_log10_energy_difference_nu_energy_{run_name}.png"
 
-ax.plot(nu_energy_bins, binned_resolution_nu_energy, "o")
-# ax.set_ylim(0, 0.4)
-ax.set_xlabel("true nu energy (eV)")
-ax.set_ylabel("log10 energy difference (1)")
-ax.set_xscale('log')
+    if statistics == "mean":
+        ylabel = f"binned mean of {delta_log_E_string} (1)"
+        title = f"Mean of {delta_log_E_string} as a function of nu_energy for {run_name}"
+    elif statistics == "std":
+        ylabel = f"binned std of {delta_log_E_string} (1)"
+        title = f"Standard deviation of {delta_log_E_string} as a function of nu_energy for {run_name}"
+    elif statistics == "count":
+        ylabel = "count"
+        title = f"Count of events inside bins as a function of nu_energy for {run_name}"
+    else:
+        raise Exception(f"Statistics {statistics} not supported")
 
+    # Create figure
+    fig = plt.figure()
 
-# ax = fig_energy.add_subplot(1, 2, 2)
-# ax.plot(nu_energy, angle_difference_data, 'o')
-# ax.set_xscale('log')
+    # Calculate binned statistics
+    ax = fig.add_subplot(1, 1, 1)
+    nu_energy_bins = np.logspace(np.log10(1e17),np.log10(1e19), 30)
+    nu_energy_bins_with_one_extra = np.append(np.logspace(np.log10(1e17),np.log10(1e19), 30), [1e20])
+    binned_resolution = stats.binned_statistic(nu_energy, energy_difference_data, bins = nu_energy_bins_with_one_extra, statistic=statistics)[0]
 
-plt.title(f"Mean log10 energy difference as a function of nu_energy for {run_name}")
-fig_energy.tight_layout()
-fig_energy.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_energy_{run_name}.png")
+    ax.plot(nu_energy_bins, binned_resolution, "o")
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_xscale(xscale)
+    ax.set_yscale(yscale)
+
+    plt.title(title)
+    fig.tight_layout()
+    fig.savefig(filename)
 # ___________________________________
 
-# --------- Energy count plotting ---------
-# Create figure
-fig_energy_count = plt.figure()
-
-# Calculate binned statistics
-ax = fig_energy_count.add_subplot(1, 1, 1)
-binned_resolution_nu_energy_count = stats.binned_statistic(nu_energy, energy_difference_data, bins = nu_energy_bins_with_one_extra, statistic = "count")[0]
-
-ax.plot(nu_energy_bins, binned_resolution_nu_energy_count, "o")
-# ax.set_ylim(0, 0.4)
-ax.set_xlabel("true nu energy (eV)")
-ax.set_ylabel("count")
-ax.set_xscale('log')
-
-plt.title(f"Count of events inside bins as a function of nu_energy for {run_name}")
-fig_energy_count.tight_layout()
-fig_energy_count.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_energy_count_{run_name}.png")
-# ___________________________________
 
 # --------- Azimuth plotting ---------
-# Create figure
-fig_azimuth = plt.figure()
+def plot_azimuth(statistics):
+    assert statistics in ["mean", "std", "count"]
 
-# Calculate binned statistics
-ax = fig_azimuth.add_subplot(1, 1, 1)
-nu_azimuth_bins = np.linspace(0,2*np.pi, 30)
-nu_azimuth_bins_with_one_extra = np.append(np.linspace(0,2*np.pi, 30), 2*np.pi+1)
-binned_resolution_nu_azimuth = stats.binned_statistic(nu_azimuth, energy_difference_data, bins = nu_azimuth_bins_with_one_extra)[0]
+    xlabel = "true neutrino direction azimuth angle (°)"
+    xscale = 'linear'
+    yscale = 'linear'
+    filename = f"{plots_dir}/{statistics}_log10_energy_difference_nu_azimuth_{run_name}.png"
 
-ax.plot(nu_azimuth_bins / units.deg, binned_resolution_nu_azimuth, "o")
-# ax.set_ylim(0, 0.4)
-ax.set_xlabel("true neutrino direction azimuth angle (°)")
-ax.set_ylabel("log10 energy difference (1)")
+    if statistics == "mean":
+        ylabel = f"binned mean of {delta_log_E_string} (1)"
+        title = f"Mean of {delta_log_E_string} as a function of nu_azimuth for {run_name}"
+    elif statistics == "std":
+        ylabel = f"binned std of {delta_log_E_string} (1)"
+        title = f"Standard deviation of {delta_log_E_string} as a function of nu_azimuth for {run_name}"
+    elif statistics == "count":
+        ylabel = "count"
+        title = f"Count of events inside bins as a function of nu_azimuth for {run_name}"
+    else:
+        raise Exception(f"Statistics {statistics} not supported")
 
+    # Create figure
+    fig = plt.figure()
 
-plt.title(f"Mean resolution as a function of nu_azimuth for {run_name}")
-fig_azimuth.tight_layout()
-fig_azimuth.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_azimuth_{run_name}.png")
-# ___________________________________
+    # Calculate binned statistics
+    ax = fig.add_subplot(1, 1, 1)
+    nu_azimuth_bins = np.linspace(0,2*np.pi, 30)
+    nu_azimuth_bins_with_one_extra = np.append(np.linspace(0,2*np.pi, 30), 2*np.pi+1)
+    binned_resolution = stats.binned_statistic(nu_azimuth, energy_difference_data, bins = nu_azimuth_bins_with_one_extra, statistic=statistics)[0]
 
-# --------- Azimuth count plotting ---------
-# Create figure
-fig_azimuth_count = plt.figure()
+    ax.plot(nu_azimuth_bins / units.deg, binned_resolution, "o")
 
-# Calculate binned statistics
-ax = fig_azimuth_count.add_subplot(1, 1, 1)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_xscale(xscale)
+    ax.set_yscale(yscale)
 
-binned_resolution_nu_azimuth_count = stats.binned_statistic(nu_azimuth, energy_difference_data, bins = nu_azimuth_bins_with_one_extra, statistic = "count")[0]
-
-ax.plot(nu_azimuth_bins / units.deg, binned_resolution_nu_azimuth_count, "o")
-# ax.set_ylim(0, 0.4)
-ax.set_xlabel("true neutrino direction azimuth angle (°)")
-ax.set_ylabel("count")
-
-
-plt.title(f"Count of events inside bins as a function of nu_azimuth for {run_name}")
-fig_azimuth_count.tight_layout()
-fig_azimuth_count.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_azimuth_count_{run_name}.png")
+    plt.title(title)
+    fig.tight_layout()
+    fig.savefig(filename)
 # ___________________________________
 
 
 # --------- Zenith plotting ---------
-# Create figure
-fig_zenith = plt.figure()
+def plot_zenith(statistics):
+    assert statistics in ["mean", "std", "count"]
 
-# Calculate binned statistics
-ax = fig_zenith.add_subplot(1, 1, 1)
-nu_zenith_bins = np.linspace(0,np.pi, 30)
-nu_zenith_bins_with_one_extra = np.append(np.linspace(0,np.pi, 30), np.pi+1)
-binned_resolution_nu_zenith = stats.binned_statistic(nu_zenith, energy_difference_data, bins = nu_zenith_bins_with_one_extra)[0]
+    xlabel = "true neutrino direction zenith angle (°)"
+    xscale = 'linear'
+    yscale = 'linear'
+    filename = f"{plots_dir}/{statistics}_log10_energy_difference_nu_zenith_{run_name}.png"
 
-ax.plot(nu_zenith_bins / units.deg, binned_resolution_nu_zenith, "o")
-# ax.set_ylim(0, 0.4)
-ax.set_xlabel("true neutrino direction zenith angle (°)")
-ax.set_ylabel("log10 energy difference (1)")
+    if statistics == "mean":
+        ylabel = f"binned mean of {delta_log_E_string} (1)"
+        title = f"Mean of {delta_log_E_string} as a function of nu_zenith for {run_name}"
+    elif statistics == "std":
+        ylabel = f"binned std of {delta_log_E_string} (1)"
+        title = f"Standard deviation of {delta_log_E_string} as a function of nu_zenith for {run_name}"
+    elif statistics == "count":
+        ylabel = "count"
+        title = f"Count of events inside bins as a function of nu_zenith for {run_name}"
+    else:
+        raise Exception(f"Statistics {statistics} not supported")
 
-plt.title(f"Mean resolution as a function of nu_zenith for {run_name}")
-fig_zenith.tight_layout()
-fig_zenith.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_zenith_{run_name}.png")
+    # Create figure
+    fig = plt.figure()
+
+    # Calculate binned statistics
+    ax = fig.add_subplot(1, 1, 1)
+    nu_zenith_bins = np.linspace(0,np.pi, 30)
+    nu_zenith_bins_with_one_extra = np.append(np.linspace(0,np.pi, 30), np.pi+1)
+    binned_resolution = stats.binned_statistic(nu_zenith, energy_difference_data, bins = nu_zenith_bins_with_one_extra, statistic=statistics)[0]
+
+    ax.plot(nu_zenith_bins / units.deg, binned_resolution, "o")
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_xscale(xscale)
+    ax.set_yscale(yscale)
+
+    plt.title(title)
+    fig.tight_layout()
+    fig.savefig(filename)
 # ___________________________________
 
-# --------- Zenith count plotting ---------
-# Create figure
-fig_zenith_count = plt.figure()
-
-# Calculate binned statistics
-ax = fig_zenith_count.add_subplot(1, 1, 1)
-binned_resolution_nu_zenith_count = stats.binned_statistic(nu_zenith, energy_difference_data, bins = nu_zenith_bins_with_one_extra, statistic = "count")[0]
-
-ax.plot(nu_zenith_bins / units.deg, binned_resolution_nu_zenith_count, "o")
-# ax.set_ylim(0, 0.4)
-ax.set_xlabel("true neutrino direction zenith angle (°)")
-ax.set_ylabel("count")
-
-plt.title(f"Count of events inside bins as a function of nu_zenith for {run_name}")
-fig_zenith_count.tight_layout()
-fig_zenith_count.savefig(f"{plots_dir}/mean_log10_energy_difference_nu_zenith_count_{run_name}.png")
-# ___________________________________
 
 # --------- SNR plotting ---------
-max_LPDA = np.max(np.max(np.abs(data[:, :, 0:4]), axis=1), axis=1)
+def plot_SNR(statistics):
+    assert statistics in ["mean", "std", "count"]
 
-# Create figure
-fig_SNR = plt.figure()
+    xlabel = "SNR"
+    xscale = 'linear'
+    yscale = 'linear'
+    filename = f"{plots_dir}/{statistics}_log10_energy_difference_SNR_{run_name}.png"
 
-# Calculate binned statistics
-ax = fig_SNR.add_subplot(1, 1, 1)
+    if statistics == "mean":
+        ylabel = f"binned mean of {delta_log_E_string} (1)"
+        title = f"Mean of {delta_log_E_string} as a function of SNR for {run_name}"
+    elif statistics == "std":
+        ylabel = f"binned std of {delta_log_E_string} (1)"
+        title = f"Standard deviation of {delta_log_E_string} as a function of SNR for {run_name}"
+    elif statistics == "count":
+        ylabel = "count"
+        title = f"Count of events inside bins as a function of SNR for {run_name}"
+    else:
+        raise Exception(f"Statistics {statistics} not supported")
 
-SNR_means = np.arange(0.5, 20.5, 2)
-SNR_bins = np.append(np.arange(0, 20, 2), [10000])
+    # Create figure
+    fig = plt.figure()
 
-binned_resolution_SNR_mean = stats.binned_statistic(max_LPDA[:, 0] / 10., energy_difference_data, bins=SNR_bins)[0]
+    # Calculate binned statistics
+    ax = fig.add_subplot(1, 1, 1)
 
-ax.plot(SNR_means, binned_resolution_SNR_mean, "o")
-# ax.set_ylim(0, 0.4)
-ax.set_xlabel("SNR")
-ax.set_ylabel("log10 energy difference (1)")
 
-plt.title(f"Mean resolution as a function of SNR for {run_name}")
-fig_SNR.tight_layout()
-fig_SNR.savefig(f"{plots_dir}/mean_log10_energy_difference_SNR_{run_name}.png")
+    max_LPDA = np.max(np.max(np.abs(data[:, :, 0:4]), axis=1), axis=1)
+    SNR_means = np.arange(0.5, 20.5, 2)
+    SNR_bins = np.append(np.arange(0, 20, 2), [10000])
+    binned_resolution = stats.binned_statistic(max_LPDA[:, 0] / 10., energy_difference_data, bins=SNR_bins, statistic=statistics)[0]
+
+    ax.plot(SNR_means, binned_resolution, "o")
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_xscale(xscale)
+    ax.set_yscale(yscale)
+
+    plt.title(title)
+    fig.tight_layout()
+    fig.savefig(filename)
 # ___________________________________
 
-# --------- SNR count plotting ---------
-# Create figure
-fig_SNR_count = plt.figure()
 
-# Calculate binned statistics
-ax = fig_SNR_count.add_subplot(1, 1, 1)
-
-binned_resolution_SNR_mean_count = stats.binned_statistic(max_LPDA[:, 0] / 10., energy_difference_data, bins=SNR_bins, statistic = "count")[0]
-
-ax.plot(SNR_means, binned_resolution_SNR_mean_count, "o")
-# ax.set_ylim(0, 0.4)
-ax.set_xlabel("SNR")
-ax.set_ylabel("count")
-
-plt.title(f"Count of events inside bins as a function of SNR for {run_name}")
-fig_SNR_count.tight_layout()
-fig_SNR_count.savefig(f"{plots_dir}/mean_log10_energy_difference_SNR_count_{run_name}.png")
-# ___________________________________
+for statistics in ["mean", "std", "count"]:
+    plot_energy(statistics)
+    plot_azimuth(statistics)
+    plot_zenith(statistics)
+    plot_SNR(statistics)
 
 print(colored(f"Plotting angular resolution depending on properties for {run_name}!", "green", attrs=["bold"]))
 print("")
