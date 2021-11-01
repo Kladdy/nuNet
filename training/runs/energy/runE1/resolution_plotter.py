@@ -84,9 +84,12 @@ energy_difference_data = get_pred_energy_diff_data(run_name)
 
 delta_log_E_string = r"$\Delta(\log_{10}\:E)$"
 
+# Supposted statistics
+supported_statistics = ["mean", "std", "count", "median"]
+
 # --------- Energy plotting ---------
 def plot_energy(statistics):
-    assert statistics in ["mean", "std", "count"]
+    assert statistics in supported_statistics
 
     xlabel = "true nu energy (eV)"
     xscale = 'log'
@@ -96,6 +99,9 @@ def plot_energy(statistics):
     if statistics == "mean":
         ylabel = f"binned mean of {delta_log_E_string} (1)"
         title = f"Mean of {delta_log_E_string} as a function of nu_energy for {run_name}"
+    elif statistics == "median":
+        ylabel = f"binned median of {delta_log_E_string} (1)"
+        title = f"Median of {delta_log_E_string} as a function of nu_energy for {run_name}"
     elif statistics == "std":
         ylabel = f"binned std of {delta_log_E_string} (1)"
         title = f"Standard deviation of {delta_log_E_string} as a function of nu_energy for {run_name}"
@@ -129,7 +135,7 @@ def plot_energy(statistics):
 
 # --------- Azimuth plotting ---------
 def plot_azimuth(statistics):
-    assert statistics in ["mean", "std", "count"]
+    assert statistics in supported_statistics
 
     xlabel = "true neutrino direction azimuth angle (°)"
     xscale = 'linear'
@@ -139,6 +145,9 @@ def plot_azimuth(statistics):
     if statistics == "mean":
         ylabel = f"binned mean of {delta_log_E_string} (1)"
         title = f"Mean of {delta_log_E_string} as a function of nu_azimuth for {run_name}"
+    elif statistics == "median":
+        ylabel = f"binned median of {delta_log_E_string} (1)"
+        title = f"Median of {delta_log_E_string} as a function of nu_azimuth for {run_name}"
     elif statistics == "std":
         ylabel = f"binned std of {delta_log_E_string} (1)"
         title = f"Standard deviation of {delta_log_E_string} as a function of nu_azimuth for {run_name}"
@@ -172,7 +181,7 @@ def plot_azimuth(statistics):
 
 # --------- Zenith plotting ---------
 def plot_zenith(statistics):
-    assert statistics in ["mean", "std", "count"]
+    assert statistics in supported_statistics
 
     xlabel = "true neutrino direction zenith angle (°)"
     xscale = 'linear'
@@ -182,6 +191,9 @@ def plot_zenith(statistics):
     if statistics == "mean":
         ylabel = f"binned mean of {delta_log_E_string} (1)"
         title = f"Mean of {delta_log_E_string} as a function of nu_zenith for {run_name}"
+    elif statistics == "median":
+        ylabel = f"binned median of {delta_log_E_string} (1)"
+        title = f"Median of {delta_log_E_string} as a function of nu_zenith for {run_name}"
     elif statistics == "std":
         ylabel = f"binned std of {delta_log_E_string} (1)"
         title = f"Standard deviation of {delta_log_E_string} as a function of nu_zenith for {run_name}"
@@ -215,7 +227,7 @@ def plot_zenith(statistics):
 
 # --------- SNR plotting ---------
 def plot_SNR(statistics):
-    assert statistics in ["mean", "std", "count"]
+    assert statistics in supported_statistics
 
     xlabel = "SNR"
     xscale = 'linear'
@@ -225,6 +237,9 @@ def plot_SNR(statistics):
     if statistics == "mean":
         ylabel = f"binned mean of {delta_log_E_string} (1)"
         title = f"Mean of {delta_log_E_string} as a function of SNR for {run_name}"
+    elif statistics == "median":
+        ylabel = f"binned median of {delta_log_E_string} (1)"
+        title = f"Median of {delta_log_E_string} as a function of SNR for {run_name}"
     elif statistics == "std":
         ylabel = f"binned std of {delta_log_E_string} (1)"
         title = f"Standard deviation of {delta_log_E_string} as a function of SNR for {run_name}"
@@ -259,7 +274,7 @@ def plot_SNR(statistics):
 # ___________________________________
 
 
-for statistics in ["mean", "std", "count"]:
+for statistics in supported_statistics:
     plot_energy(statistics)
     plot_azimuth(statistics)
     plot_zenith(statistics)
