@@ -93,7 +93,8 @@ def calculate_percentage_interval(energy_difference_data, percentage=0.68):
     N = energy_difference_data.size
     weights = np.ones(N)
 
-    energy = stats.quantile_1d(energy_difference_data, weights, percentage)
+    # Take abs due to the fact that the energy difference can be negative
+    energy = stats.quantile_1d(np.abs(energy_difference_data), weights, percentage)
 
     # OLD METHOD -------------------------------
     # Calculate Rayleigh fit

@@ -49,11 +49,12 @@ N = energy_difference_data.size
 # Calculate 68 %
 energy_68 = calculate_percentage_interval(energy_difference_data, 0.68)
 
+delta_log_E_string = r"$\Delta(\log_{10}\:E)$"
 # fig, ax = php.get_histogram(predicted_nu_energy[:, 0], bins=np.arange(17, 20.1, 0.05), xlabel="predicted energy")
 fig, ax = php.get_histogram(energy_difference_data, bins=np.linspace(-1.5, 1.5, 90),
-                            xlabel=r"log10 energy difference")
+                            xlabel=delta_log_E_string)
 # ax.plot(xl, N*stats.rayleigh(scale=scale, loc=loc).pdf(xl))
-plt.title(f"Energy resolution for {run_name} with\n68 % at log10 energy difference of {energy_68:.2f}")
+plt.title(f"Energy resolution for {run_name} with\n68 % interval of {delta_log_E_string} at {energy_68:.2f}")
 fig.savefig(f"{plots_dir}/energy_resolution_{run_name}.png")
 
 # # plt.show()
