@@ -75,6 +75,8 @@ if not os.path.exists(saved_model_dir):
 if not os.path.exists(f"{saved_model_dir}/{architectures_dir}"):
     os.makedirs(f"{saved_model_dir}/{architectures_dir}")
 
+conv2D_filter_size = 5
+conv2D_filter_amount = 32
 # Run-dependent values
 if this_run_id == "1":
     learning_rate = 0.00005

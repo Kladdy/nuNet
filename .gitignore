@@ -292,3 +292,6 @@ wandb/
 
 # plots
 plots/
+
+# run commands
+run_commands
