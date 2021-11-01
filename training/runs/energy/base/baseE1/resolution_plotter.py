@@ -255,10 +255,9 @@ def plot_SNR(statistics):
     # Calculate binned statistics
     ax = fig.add_subplot(1, 1, 1)
 
-
-    max_LPDA = np.max(np.max(np.abs(data[:, :, 0:4]), axis=1), axis=1)
-    SNR_means = np.arange(0.5, 20.5, 2)
-    SNR_bins = np.append(np.arange(0, 20, 2), [10000])
+    max_LPDA = np.max(np.max(np.abs(data[:, 0:4, :]), axis=1), axis=1)
+    SNR_means = np.arange(2.5, 22.5, 1)
+    SNR_bins = np.append(np.arange(2, 22, 1), [23])
     binned_resolution = stats.binned_statistic(max_LPDA[:, 0] / 10., energy_difference_data, bins=SNR_bins, statistic=statistics)[0]
 
     ax.plot(SNR_means, binned_resolution, "o")

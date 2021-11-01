@@ -208,17 +208,15 @@ fig_zenith_count.savefig(f"{plots_dir}/mean_resolution_nu_zenith_count_{run_name
 # ___________________________________
 
 # --------- SNR plotting ---------
-max_LPDA = np.max(np.max(np.abs(data[:, :, 0:4]), axis=1), axis=1)
-
 # Create figure
 fig_SNR = plt.figure()
 
 # Calculate binned statistics
 ax = fig_SNR.add_subplot(1, 1, 1)
 
-SNR_means = np.arange(0.5, 20.5, 2)
-SNR_bins = np.append(np.arange(0, 20, 2), [10000])
-
+max_LPDA = np.max(np.max(np.abs(data[:, 0:4, :]), axis=1), axis=1)
+SNR_means = np.arange(2.5, 22.5, 1)
+SNR_bins = np.append(np.arange(2, 22, 1), [23])
 binned_resolution_SNR_mean = stats.binned_statistic(max_LPDA[:, 0] / 10., angle_difference_data, bins=SNR_bins)[0]
 
 ax.plot(SNR_means, binned_resolution_SNR_mean, "o")
