@@ -75,6 +75,28 @@ if not os.path.exists(saved_model_dir):
 if not os.path.exists(f"{saved_model_dir}/{architectures_dir}"):
     os.makedirs(f"{saved_model_dir}/{architectures_dir}")
 
+# Run-dependent values
+if this_run_id == "1":
+    learning_rate = 0.00005
+elif this_run_id == "2":
+    learning_rate = 0.0001
+elif this_run_id == "3":
+    learning_rate = 0.00001
+elif this_run_id == "4":
+    conv2D_filter_size = 5
+elif this_run_id == "5":
+    conv2D_filter_size = 10
+elif this_run_id == "6":
+    conv2D_filter_size = 3
+elif this_run_id == "7":
+    conv2D_filter_amount = 32
+elif this_run_id == "8":
+    conv2D_filter_amount = 16
+elif this_run_id == "9":
+    conv2D_filter_amount = 100
+else:
+    raise Exception(f"This run id not supported: {this_run_id}")
+
 # Initialize wandb
 run = wandb.init(project=project_name,
                  group=run_version,
@@ -101,11 +123,11 @@ wandb.log({f"dataset_name": dataset_name,
             f"n_files_val": n_files_val })
 
 # Model params
-conv2D_filter_size = 5
+#conv2D_filter_size = 5
 pooling_size = 4
 amount_Conv2D_layers_per_block = 3 
 amount_Conv2D_blocks = 4
-conv2D_filter_amount = 32
+#conv2D_filter_amount = 32
 activation_function = "relu"
 
 # Send model params to wandb
