@@ -44,7 +44,7 @@ feedback_freq = 3 # Only train on 1/feedback_freq of data per epoch
 architectures_dir = "architectures"
 learning_rate = 0.00005
 epochs = 100
-loss_function = "mean_absolute_error"
+#loss_function = "mean_absolute_error"
 es_patience = 5
 es_min_delta = 0.0001 # Old value: es_min_delta = 0.0001
 # ------
@@ -52,9 +52,23 @@ es_min_delta = 0.0001 # Old value: es_min_delta = 0.0001
 # Parse arguments
 parser = argparse.ArgumentParser(description='Neural network for neutrino energy reconstruction')
 parser.add_argument("run_id", type=str ,help="the id of the run, eg '3.2' for run3.2")
+parser.add_argument("--loss_function")
+parser.add_argument("--activation_function")
+parser.add_argument("--conv2D_filter_size", type=int)
+parser.add_argument("--pooling_size", type=int)
+parser.add_argument("--amount_Conv2D_layers_per_block", type=int)
+parser.add_argument("--amount_Conv2D_blocks", type=int)
+parser.add_argument("--conv2D_filter_amount", type=int)
 
 args = parser.parse_args()
 run_id = args.run_id
+loss_function = args.loss_function
+activation_function = args.activation_function
+conv2D_filter_size = args.conv2D_filter_size
+pooling_size = args.pooling_size
+amount_Conv2D_layers_per_block = args.amount_Conv2D_layers_per_block
+amount_Conv2D_blocks = args.amount_Conv2D_blocks
+conv2D_filter_amount = args.conv2D_filter_amount
 
 # Save the run name
 run_name = f"run{run_id}"
@@ -101,12 +115,12 @@ wandb.log({f"dataset_name": dataset_name,
             f"n_files_val": n_files_val })
 
 # Model params
-conv2D_filter_size = 5
-pooling_size = 4
-amount_Conv2D_layers_per_block = 3 
-amount_Conv2D_blocks = 4
-conv2D_filter_amount = 32
-activation_function = "relu"
+#conv2D_filter_size = 5
+#pooling_size = 4
+#amount_Conv2D_layers_per_block = 3 
+#amount_Conv2D_blocks = 4
+#conv2D_filter_amount = 32
+#activation_function = "relu"
 
 # Send model params to wandb
 wandb.log({f"conv2D_filter_amount": conv2D_filter_amount})
