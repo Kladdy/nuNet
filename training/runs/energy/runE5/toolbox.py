@@ -10,6 +10,11 @@ from NuRadioReco.utilities import units
 import pickle
 # -------
 
+# boolean if we should have DIPOLE copied or just zeros for filling out the channel
+# If True, we get 5 copies of the DIPOLE.
+# If False, we get 1 copy of the DIPOLE and 3 copies of zeros 
+copy_DIPOLE = True
+
 def root_git_dir():
     return subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8')
 
@@ -46,7 +51,22 @@ def load_file(i_file, norm=1e-6):
     # Get log10 of energy
     shower_energy_log10 = np.log10(shower_energy_data)
 
-    return data, shower_energy_log10
+
+    # Restructure the data so that DIPOLE gets put in a separate channel
+    DIPOLE_trace = data[:, 4, :, :]
+    DIPOLE_trace2 = DIPOLE_trace[:, np.newaxis, :, :] # Add an axis
+
+    if copy_DIPOLE == True:
+        stretched_DIPOLE = np.repeat(DIPOLE_trace2, 4, axis=1)
+    else: # Pad it with 3 zeros
+        stretched_DIPOLE = np.pad(DIPOLE_trace2, [(0, 0), (0,3), (0,0), (0, 0)], mode='constant', constant_values=0)
+
+    LPDA_traces = data[:, 0:4, :, :]
+
+    # Add the two traces into an array with 2 channels
+    restructured_data = np.concatenate((LPDA_traces, stretched_DIPOLE), axis=3).shape
+
+    return restructured_data, shower_energy_log10
 
 # Loading data and label files and also other properties
 def load_file_all_properties(i_file, norm=1e-6):
@@ -85,7 +105,22 @@ def load_file_all_properties(i_file, norm=1e-6):
     nu_flavor_data = nu_flavor_data[idx]
     shower_energy_data = shower_energy_data[idx]
 
-    return data, nu_direction_data, nu_zenith_data, nu_azimuth_data, nu_energy_data, nu_flavor_data, shower_energy_data
+
+    # Restructure the data so that DIPOLE gets put in a separate channel
+    DIPOLE_trace = data[:, 4, :, :]
+    DIPOLE_trace2 = DIPOLE_trace[:, np.newaxis, :, :] # Add an axis
+
+    if copy_DIPOLE == True:
+        stretched_DIPOLE = np.repeat(DIPOLE_trace2, 4, axis=1)
+    else: # Pad it with 3 zeros
+        stretched_DIPOLE = np.pad(DIPOLE_trace2, [(0, 0), (0,3), (0,0), (0, 0)], mode='constant', constant_values=0)
+
+    LPDA_traces = data[:, 0:4, :, :]
+
+    # Add the two traces into an array with 2 channels
+    restructured_data = np.concatenate((LPDA_traces, stretched_DIPOLE), axis=3).shape
+
+    return restructured_data, nu_direction_data, nu_zenith_data, nu_azimuth_data, nu_energy_data, nu_flavor_data, shower_energy_data
 
 
 def calculate_percentage_interval(energy_difference_data, percentage=0.68):
