@@ -13,7 +13,7 @@ import pickle
 # boolean if we should have DIPOLE copied or just zeros for filling out the channel
 # If True, we get 4 copies of the DIPOLE.
 # If False, we get 1 copy of the DIPOLE and 3 copies of zeros 
-copy_DIPOLE = True
+copy_DIPOLE = False
 
 def root_git_dir():
     return subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8')
