@@ -120,7 +120,7 @@ wandb.log({f"activation_function": activation_function})
 model = Sequential()
 
 # Conv2D block 1
-model.add(Conv2D(conv2D_filter_amount, (1, conv2D_filter_size), strides=(1, 1), padding='same', activation=activation_function, input_shape=(5, 512, 2)))
+model.add(Conv2D(conv2D_filter_amount, (1, conv2D_filter_size), strides=(1, 1), padding='same', activation=activation_function, input_shape=(4, 512, 2)))
 
 for _ in range(amount_Conv2D_layers_per_block-1):
     model.add(Conv2D(conv2D_filter_amount, (1, conv2D_filter_size), strides=(1, 1), padding='same', activation=activation_function))

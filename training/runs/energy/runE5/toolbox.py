@@ -64,7 +64,7 @@ def load_file(i_file, norm=1e-6):
     LPDA_traces = data[:, 0:4, :, :]
 
     # Add the two traces into an array with 2 channels
-    restructured_data = np.concatenate((LPDA_traces, stretched_DIPOLE), axis=3).shape
+    restructured_data = np.concatenate((LPDA_traces, stretched_DIPOLE), axis=3)
 
     return restructured_data, shower_energy_log10
 
@@ -118,7 +118,7 @@ def load_file_all_properties(i_file, norm=1e-6):
     LPDA_traces = data[:, 0:4, :, :]
 
     # Add the two traces into an array with 2 channels
-    restructured_data = np.concatenate((LPDA_traces, stretched_DIPOLE), axis=3).shape
+    restructured_data = np.concatenate((LPDA_traces, stretched_DIPOLE), axis=3)
 
     return restructured_data, nu_direction_data, nu_zenith_data, nu_azimuth_data, nu_energy_data, nu_flavor_data, shower_energy_data
 
