@@ -12,6 +12,9 @@ from scipy import constants as scipy_constants
 from NuRadioReco.utilities import fft
 # -------
 
+n_noise_iterations = 5
+n_channels = 5
+
 np.set_printoptions(precision=4)
 
 # n_files and n_files_val comes from dataset in constants.py
@@ -22,10 +25,10 @@ n_files_train = n_files - n_files_val - n_files_test
 list_of_file_ids_train = np.arange(n_files_train, dtype=np.int)
 list_of_file_ids_val = np.arange(n_files_train, n_files_train + n_files_val, dtype=np.int)
 list_of_file_ids_test = np.arange(n_files_train + n_files_val, n_files, dtype=np.int)
-n_events_per_file = 100000
+n_events_per_file = 100000 * n_noise_iterations
 batch_size = 64
 
-n_noise_iterations = 5
+
 
 # details of the MC data set to be able to calculate filter
 sampling_rate = 2 * units.GHz
@@ -80,7 +83,7 @@ class TrainDataset(tf.data.Dataset):
                 y = shower_energy_log10[rand_ids[i_batch * batch_size + i_event]]
                 for i_noise in range(n_noise_iterations):
                     yy[i_event * n_noise_iterations + i_noise] = y
-                    for i_channel in range(shower_energy_log10):
+                    for i_channel in range(n_channels):
                         #print(i_event, i_noise, i_channel)
                         x = data[rand_ids[i_batch * batch_size + i_event], i_channel, :, 0]
                         noise_fft = channelGenericNoiseAdder.bandlimited_noise(0, None, n_samples, sampling_rate, noise_amplitude, 
@@ -122,9 +125,36 @@ class ValDataset(tf.data.Dataset):
         n_batches = num_samples // batch_size
         for i_batch in range(n_batches):
             # Reading data (line, record) from the file
-            y = shower_energy_log10[rand_ids[i_batch * batch_size:(i_batch + 1) * batch_size]]
-            x = data[rand_ids[i_batch * batch_size:(i_batch + 1) * batch_size], :, :, :]
-            yield x, y
+            
+            # create new array strucures that contain the different noise realizations for a batch of data
+            tmp_shape = np.array(data.shape)
+            tmp_shape[0] = batch_size * n_noise_iterations
+            xx = np.zeros(tmp_shape)
+            tmp_shape = np.array(shower_energy_log10.shape)
+            tmp_shape[0] = batch_size * n_noise_iterations
+            yy = np.zeros(tmp_shape)
+
+            for i_event in range(batch_size):
+                y = shower_energy_log10[rand_ids[i_batch * batch_size + i_event]]
+                for i_noise in range(n_noise_iterations):
+                    yy[i_event * n_noise_iterations + i_noise] = y
+                    for i_channel in range(n_channels):
+                        #print(i_event, i_noise, i_channel)
+                        x = data[rand_ids[i_batch * batch_size + i_event], i_channel, :, 0]
+                        noise_fft = channelGenericNoiseAdder.bandlimited_noise(0, None, n_samples, sampling_rate, noise_amplitude, 
+                                                                       type='rayleigh', 
+                                                                       time_domain=False, bandwidth=None)
+                        tmp = x + fft.freq2time(noise_fft * filt, sampling_rate)  # apply filter to generated noise and add to noiseless trace
+                        xx[i_event * n_noise_iterations + i_noise, i_channel,:,0] = tmp
+            # now loop over the new xx,yy arrays and return it in chunks of batch_size
+            rand_ids2 = np.arange(n_noise_iterations * batch_size, dtype=np.int)
+            np.random.shuffle(rand_ids2)
+            for i_noise in range(n_noise_iterations):
+                xxx = xx[rand_ids2[i_noise * batch_size:(i_noise + 1) * batch_size], :, :, :]
+                yyy = yy[rand_ids2[i_noise * batch_size:(i_noise + 1) * batch_size]]
+                #print("xxx shape", xxx.shape)
+                #print("yyy shape", yyy.shape)
+                yield xxx, yyy
 
     def __new__(cls, file_id):
         return tf.data.Dataset.from_generator(
