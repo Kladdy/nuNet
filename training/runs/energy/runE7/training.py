@@ -35,23 +35,22 @@ from tensorflow.keras.utils import Sequence, plot_model
 import tensorflow.keras.backend as K
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger
 
-from generator import TrainDataset, ValDataset, n_events_per_file, n_files_train, batch_size
+from generator import TrainDataset, ValDataset, n_events_per_file, n_files_train, batch_size, n_noise_iterations
 from constants import run_version, dataset_name, datapath, data_filename, label_filename, plots_dir, project_name, n_files, n_files_val, dataset_em, dataset_noise, test_file_ids
 # -------
 
 # Values
 feedback_freq = 1 # Only train on 1/feedback_freq of data per epoch
-# it was 3 for D2.1-4 but 1 now for D2.5
 architectures_dir = "architectures"
 learning_rate = 0.00005
 epochs = 100
 loss_function = "mean_absolute_error"
-es_patience = 5
-es_min_delta = 0 # Old value: es_min_delta = 0.0001
+es_patience = 3
+es_min_delta = 0.001 # Old value: es_min_delta = 0.0001
 # ------
 
 # Parse arguments
-parser = argparse.ArgumentParser(description='Neural network for neutrino direction reconstruction')
+parser = argparse.ArgumentParser(description='Neural network for neutrino energy reconstruction')
 parser.add_argument("run_id", type=str ,help="the id of the run, eg '3.2' for run3.2")
 
 args = parser.parse_args()
@@ -89,7 +88,7 @@ run = wandb.init(project=project_name,
                  })
 run.name = run_name
 config = wandb.config
-
+    
 # Send dataset params to wandb
 wandb.log({f"dataset_name": dataset_name,
             f"dataset_em": dataset_em,
@@ -100,13 +99,14 @@ wandb.log({f"dataset_name": dataset_name,
             f"label_filename": label_filename,
             f"n_files": n_files,
             f"n_files_val": n_files_val })
-    
+
 # Model params
 conv2D_filter_size = 5
 pooling_size = 4
 amount_Conv2D_layers_per_block = 3 
 amount_Conv2D_blocks = 4
 conv2D_filter_amount = 32
+activation_function = "relu"
 
 # Send model params to wandb
 wandb.log({f"conv2D_filter_amount": conv2D_filter_amount})
@@ -114,13 +114,7 @@ wandb.log({f"conv2D_filter_size": conv2D_filter_size})
 wandb.log({f"pooling_size": pooling_size})
 wandb.log({f"amount_Conv2D_blocks": amount_Conv2D_blocks})
 wandb.log({f"amount_Conv2D_layers_per_block": amount_Conv2D_layers_per_block})
-
-# Use relu by default
-activation_function = "relu"
-
-# Change to elu if D2.2 or D2.3
-if this_run_id == "2" or this_run_id == "3":
-    activation_function = "elu"
+wandb.log({f"activation_function": activation_function})
 
 # ----------- Create model -----------
 model = Sequential()
@@ -148,12 +142,6 @@ model.add(BatchNormalization())
 # Flatten prior to dense layers
 model.add(Flatten())
 
-# Change back to relu for D2.3. If D2.4, change to elu (also new D2.5)
-if this_run_id == "3":
-    activation_function = "relu"
-if this_run_id == "4" or this_run_id == "5":
-    activation_function = "elu"
-
 # Dense layers (fully connected)
 model.add(Dense(1024, activation=activation_function))
 model.add(Dense(1024, activation=activation_function))
@@ -169,8 +157,7 @@ model.add(Dense(128, activation=activation_function))
 # # model.add(Dropout(.1))
 
 # Output layer
-model.add(Dense(3))
-model.add(Lambda(lambda x: K.l2_normalize(x,axis=1)))
+model.add(Dense(1))
 
 model.compile(loss=config.loss_function,
               optimizer=Adam(lr=config.learning_rate))
@@ -237,22 +224,24 @@ time.sleep(5)
 os.system(f"python plot_performance.py {run_id}")
 
 # Calculate 68 % interval and sent to wandb
-angle_68 = find_68_interval(run_name)
+energy_68 = find_68_interval(run_name)
 
-wandb.log({f"68 % interval": angle_68})
+wandb.log({f"68 % interval": energy_68})
 
 # Send angular resolution image to wandb
-ang_res_image = Image.open(f"{plots_dir}/angular_resolution_{run_name}.png")
-wandb.log({"angular_resolution": [wandb.Image(ang_res_image, caption=f"Angular resolution for {run_name}")]})
+energy_res_image = Image.open(f"{plots_dir}/energy_resolution_{run_name}.png")
+wandb.log({"energy_resolution": [wandb.Image(energy_res_image, caption=f"energy resolution for {run_name}")]})
 
 # Plot resolution as a function of SNR, energy and azimuth and send to wandb
 os.system(f"python resolution_plotter.py {run_id}")
-ang_res_nu_enegy_image = Image.open(f"{plots_dir}/mean_resolution_nu_energy_{run_name}.png")
-ang_res_SNR_image = Image.open(f"{plots_dir}/mean_resolution_SNR_{run_name}.png")
-ang_res_nu_zenith_image = Image.open(f"{plots_dir}/mean_resolution_nu_zenith_{run_name}.png")
-wandb.log({"angular_resolution_nu_energy": [wandb.Image(ang_res_nu_enegy_image, caption=f"Angular resolution over nu_energy for {run_name}")]})
-wandb.log({"angular_resolution_snr": [wandb.Image(ang_res_SNR_image, caption=f"Angular resolution over SNR for {run_name}")]})
-wandb.log({"angular_resolution_nu_zenith": [wandb.Image(ang_res_nu_zenith_image, caption=f"Angular resolution nu_zenith for {run_name}")]})
+log10_energy_diff_nu_enegy_image = Image.open(f"{plots_dir}/mean_log10_energy_difference_nu_energy_{run_name}.png")
+log10_energy_diff_SNR_image = Image.open(f"{plots_dir}/mean_log10_energy_difference_SNR_{run_name}.png")
+log10_energy_diff_nu_zenith_image = Image.open(f"{plots_dir}/mean_log10_energy_difference_nu_zenith_{run_name}.png")
+log10_energy_diff_nu_azimuth_image = Image.open(f"{plots_dir}/mean_log10_energy_difference_nu_azimuth_{run_name}.png")
+wandb.log({"angular_log10_energy_difference_nu_energy": [wandb.Image(log10_energy_diff_nu_enegy_image, caption=f"Angular resolution over nu_energy for {run_name}")]})
+wandb.log({"angular_log10_energy_difference_snr": [wandb.Image(log10_energy_diff_SNR_image, caption=f"Angular resolution over SNR for {run_name}")]})
+wandb.log({"angular_log10_energy_difference_nu_zenith": [wandb.Image(log10_energy_diff_nu_zenith_image, caption=f"Angular resolution nu_zenith for {run_name}")]})
+wandb.log({"angular_log10_energy_difference_nu_azimuth": [wandb.Image(log10_energy_diff_nu_azimuth_image, caption=f"Angular resolution nu_azimuth for {run_name}")]})
 
 run.join()
 
