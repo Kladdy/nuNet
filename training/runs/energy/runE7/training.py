@@ -45,8 +45,8 @@ architectures_dir = "architectures"
 learning_rate = 0.00005
 epochs = 100
 loss_function = "mean_absolute_error"
-es_patience = 3
-es_min_delta = 0.001 # Old value: es_min_delta = 0.0001
+es_patience = 7
+es_min_delta = 0.0001 # Old value: es_min_delta = 0.0001
 # ------
 
 # Parse arguments
