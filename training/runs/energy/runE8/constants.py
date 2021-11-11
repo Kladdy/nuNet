@@ -13,8 +13,8 @@ dataset_name = "SouthPole"
 #     noise:
 #         True (default) / False
 dataset_name = "ARZ"
-dataset_em = True
-dataset_noise = True # SET TO FALSE WHEN TRAINING; TRUE WHEN EVALUTAING
+dataset_em = False
+dataset_noise = False # SET TO FALSE WHEN TRAINING; TRUE WHEN EVALUTAING
 
 dataset = datasets.Dataset(dataset_name, dataset_em, dataset_noise)
 

@@ -12,7 +12,7 @@ from scipy import constants as scipy_constants
 from NuRadioReco.utilities import fft
 # -------
 
-n_noise_iterations = 20
+n_noise_iterations = 10
 n_channels = 5
 
 np.set_printoptions(precision=4)

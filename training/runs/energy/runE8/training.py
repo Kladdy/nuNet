@@ -33,7 +33,7 @@ from tensorflow.keras.regularizers import l2
 from tensorflow.keras.models import Model
 from tensorflow.keras.utils import Sequence, plot_model
 import tensorflow.keras.backend as K
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger, ReduceLROnPlateau
 
 from generator import TrainDataset, ValDataset, n_events_per_file, n_files_train, batch_size, n_noise_iterations
 from constants import run_version, dataset_name, datapath, data_filename, label_filename, plots_dir, project_name, n_files, n_files_val, dataset_em, dataset_noise, test_file_ids
@@ -45,8 +45,8 @@ architectures_dir = "architectures"
 learning_rate = 0.00005
 epochs = 100
 loss_function = "mean_absolute_error"
-es_patience = 3
-es_min_delta = 0.001 # Old value: es_min_delta = 0.0001
+es_patience = 5
+es_min_delta = 0.0001 # Old value: es_min_delta = 0.0001
 # ------
 
 # Parse arguments
@@ -188,7 +188,9 @@ mc = ModelCheckpoint(filepath=os.path.join(saved_model_dir, f"model.{run_name}.h
                                                     save_best_only=True, mode='auto',
                                                     save_weights_only=False)
 wb = WandbCallback(save_model=False)
-callbacks = [es, mc , wb, csv_logger]      
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2,
+                              patience=es_patience-2, min_lr=0.000001, verbose=1)
+callbacks = [es, mc , wb, csv_logger, reduce_lr]      
 
 # Calculating steps per epoch and batches per file
 steps_per_epoch = n_files_train // feedback_freq * (n_events_per_file // batch_size)
