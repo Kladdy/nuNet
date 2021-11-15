@@ -108,7 +108,7 @@ def calculate_percentage_interval(energy_difference_data, percentage=0.68):
 
     return energy
 
-def get_pred_energy_diff_data(run_name):
+def get_pred_energy_diff_data(run_name, do_return_data=False):
     prediction_file = f'{models_dir(run_name)}/model.{run_name}.h5_predicted.pkl'
     with open(prediction_file, "br") as fin:
         shower_energy_log10_predict, shower_energy_log10 = pickle.load(fin)
@@ -122,7 +122,10 @@ def get_pred_energy_diff_data(run_name):
     # nu_direction = nu_direction[:N]
     energy_difference_data = np.array([ shower_energy_log10_predict[i] - shower_energy_log10[i] for i in range(len(shower_energy_log10))])
 
-    return energy_difference_data
+    if do_return_data:
+        return energy_difference_data, shower_energy_log10_predict, shower_energy_log10
+    else:
+        return energy_difference_data
 
 def find_68_interval(run_name):
     energy_difference_data = get_pred_energy_diff_data(run_name)
