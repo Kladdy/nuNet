@@ -22,8 +22,8 @@ class Dataset:
             self.datapath = f"{BASE_PATH}/Alvarez2009_had_noise.yaml/G03generate_events_full_surface_sim/v2/LPDA_2of4_100Hz/4LPDA_1dipole_fullband/"
             self.data_filename = "data_1-3_LPDA_2of4_100Hz_4LPDA_1dipole_fullband_"
             self.label_filename = "labels_1-3_LPDA_2of4_100Hz_4LPDA_1dipole_fullband_"
-            self.n_files = 19
-            self.n_files_val = 2
+            self.n_files = 82
+            self.n_files_val = 10
         elif dataset_name.upper() == "ARZ":
             if noise:
                 noise_string = "em_had_separately"
@@ -35,14 +35,14 @@ class Dataset:
                 self.datapath = f"{BASE_PATH}/ARZ2020_emhad_noise.yaml/G03generate_events_full_surface_sim/LPDA_2of4_100Hz/4LPDA_1dipole_fullband/{noise_string}/"
                 self.data_filename = "data_emhad_emhad_1-3_had_1_LPDA_2of4_100Hz_4LPDA_1dipole_fullband_"
                 self.label_filename = "labels_emhad_emhad_1-3_had_1_LPDA_2of4_100Hz_4LPDA_1dipole_fullband_"
-                self.n_files = 6
-                self.n_files_val = 1
+                self.n_files = 50
+                self.n_files_val = 6
             else:
                 self.test_file_ids = [38, 39, 40]
                 self.datapath = f"{BASE_PATH}/ARZ2020_emhad_noise.yaml/G03generate_events_full_surface_sim/LPDA_2of4_100Hz/4LPDA_1dipole_fullband/{noise_string}/"
                 self.data_filename = "data_had_emhad_1-3_had_1_LPDA_2of4_100Hz_4LPDA_1dipole_fullband_"
                 self.label_filename = "labels_had_emhad_1-3_had_1_LPDA_2of4_100Hz_4LPDA_1dipole_fullband_"
-                self.n_files = 6
-                self.n_files_val = 1
+                self.n_files = 41
+                self.n_files_val = 5
         else:
             raise ValueError(f"dataset_name ({dataset_name.upper()}) must be either 'ALVAREZ' or 'ARZ'")
