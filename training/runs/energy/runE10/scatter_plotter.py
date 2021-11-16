@@ -1,5 +1,6 @@
 # %%
-from toolbox import get_pred_energy_diff_data, models_dir
+from toolbox import get_pred_energy_diff_data
+from constants import plots_dir
 from matplotlib import pyplot as plt
 import argparse
 
@@ -27,14 +28,15 @@ ymax = max(shower_energy_log10)
 fig  = plt.figure()
 ax = fig.gca()
 ax.plot(shower_energy_log10_predict, shower_energy_log10, '.', markersize=0.1)
-ax.plot([xmin, xmax], [ymin, ymax], 'k--')
+ax.plot([min(xmin, ymin), max(xmax, ymax)], [min(xmin, ymin), max(xmax, ymax)], 'k--')
 
+ax.set_title(f"Scatter plot for {run_name}")
 ax.set_xlabel(f"predicted {delta_log_E_string}")
 ax.set_ylabel(f"true {delta_log_E_string}")
 
-ax.set_xlim(xmin, xmax)
-ax.set_ylim(ymin, ymax)
+# ax.set_xlim(xmin - 0.5, xmax + 0.5)
+# ax.set_ylim(ymin - 0.5, ymax + 0.5)
 
 fig.tight_layout()
 
-fig.savefig(f'{models_dir(run_name)}/scatter_{run_name}.png')
+fig.savefig(f'{plots_dir}/scatter_{run_name}.png')
