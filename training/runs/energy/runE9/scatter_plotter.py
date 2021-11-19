@@ -18,7 +18,7 @@ run_name = f"run{run_id}"
 energy_difference_data, shower_energy_log10_predict, shower_energy_log10 = get_pred_energy_diff_data(run_name, True)
 
 # %%
-delta_log_E_string = r"$\Delta(\log_{10}\:E)$"
+log_E_string = r"$\log_{10}\:E$"
 
 xmin = min(shower_energy_log10_predict)
 xmax = max(shower_energy_log10_predict)
@@ -31,9 +31,11 @@ ax.plot(shower_energy_log10_predict, shower_energy_log10, '.', markersize=0.1)
 ax.plot([min(xmin, ymin), max(xmax, ymax)], [min(xmin, ymin), max(xmax, ymax)], 'k--')
 
 ax.set_title(f"Scatter plot for {run_name}")
-ax.set_xlabel(f"predicted {delta_log_E_string}")
-ax.set_ylabel(f"true {delta_log_E_string}")
+ax.set_xlabel(f"predicted {log_E_string}")
+ax.set_ylabel(f"true {log_E_string}")
 
+ax.set_xlim(16, 19.5)
+ax.set_ylim(16, 19.5)
 # ax.set_xlim(xmin - 0.5, xmax + 0.5)
 # ax.set_ylim(ymin - 0.5, ymax + 0.5)
 
