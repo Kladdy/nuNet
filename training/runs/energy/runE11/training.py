@@ -198,7 +198,7 @@ n_batches_per_file = n_events_per_file // batch_size
 print(f"steps_per_epoch {steps_per_epoch}, n_batches_per_file {n_batches_per_file}")
 
 # Configuring training dataset
-dataset_train = tf.data.Dataset.range(n_files_train).prefetch(n_batches_per_file * 10).interleave(
+dataset_train = tf.data.Dataset.range(n_files_train).prefetch(tf.data.AUTOTUNE).interleave(
         TrainDataset,
         cycle_length=2,
         num_parallel_calls=2,
