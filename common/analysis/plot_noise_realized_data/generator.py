@@ -3,7 +3,7 @@ import os
 import numpy as np
 import tensorflow as tf
 import time
-from toolbox import load_file
+from toolbox import load_file, common_dir
 from NuRadioReco.utilities import units
 import NuRadioReco.modules.channelGenericNoiseAdder
 import NuRadioReco.modules.channelBandPassFilter
@@ -37,8 +37,10 @@ n_samples = 512
 noise_temperature = 300
 ff = np.fft.rfftfreq(n_samples, 1/sampling_rate)
 channelBandPassFilter = NuRadioReco.modules.channelBandPassFilter.channelBandPassFilter()
-filt = channelBandPassFilter.get_filter(ff, 0, 0, None, [0 * units.MHz, 800 * units.MHz], "butter", 10)
-filt *= channelBandPassFilter.get_filter(ff, 0, 0, None, [80 * units.MHz, 1000 * units.GHz], "butter", 5)
+# filt = channelBandPassFilter.get_filter(ff, 0, 0, None, [0 * units.MHz, 800 * units.MHz], "butter", 10)
+# filt *= channelBandPassFilter.get_filter(ff, 0, 0, None, [80 * units.MHz, 1000 * units.GHz], "butter", 5)
+filt = channelBandPassFilter.get_filter(ff, 0, 0, None, [80 * units.MHz, 1000 * units.GHz], "butter", 5)
+filt *= np.load(f"{common_dir()}/bandpass_filters/500MHz_filter.npy")
 bandwidth = np.trapz(np.abs(filt) ** 2, ff)
 Vrms = (noise_temperature * 50 * scipy_constants.k * bandwidth / units.Hz) ** 0.5
 noise_amplitude = Vrms / (bandwidth / (max_freq)) ** 0.5

@@ -3,7 +3,7 @@ import os
 import subprocess
 import numpy as np
 import time
-from constants import dataset
+from constants import dataset, dataset_noise
 from radiotools import helper as hp
 from radiotools import stats
 from NuRadioReco.utilities import units
@@ -21,13 +21,18 @@ def models_dir(run_name):
 
 # Loading data and label files
 def load_file(i_file, norm=1e-6):
-    # Load 500 MHz filter
-    filt = np.load(f"{common_dir()}/bandpass_filters/500MHz_filter.npy")
+    
 
     #     t0 = time.time()
     #     print(f"loading file {i_file}", flush=True)
     data = np.load(os.path.join(dataset.datapath, f"{dataset.data_filename}{i_file:04d}.npy"), allow_pickle=True)
-    data = np.fft.irfft(np.fft.rfft(data, axis=-1) * filt, axis=-1)
+    
+    # Only do bandpass filtering if we are using noisy data
+    if dataset_noise:
+        # Load 500 MHz filter
+        filt = np.load(f"{common_dir()}/bandpass_filters/500MHz_filter.npy")
+        data = np.fft.irfft(np.fft.rfft(data, axis=-1) * filt, axis=-1)
+        
     data = data[:, :, :, np.newaxis]
 
     labels_tmp = np.load(os.path.join(dataset.datapath, f"{dataset.label_filename}{i_file:04d}.npy"), allow_pickle=True)
