@@ -24,16 +24,18 @@ def models_dir(run_name):
 def load_file(i_file, norm=1e-6, VALIDATION=False):
 
     if VALIDATION == True:
-        dataset_name = "ARZ"
-        dataset_em = False
-        dataset_noise = True 
+        ds_name = "ARZ"
+        ds_em = False
+        ds_noise = True 
 
-        ds = datasets.Dataset(dataset_name, dataset_em, dataset_noise)
+        ds = datasets.Dataset(ds_name, ds_em, ds_noise)
         data = np.load(os.path.join(ds.datapath, f"{ds.data_filename}{i_file:04d}.npy"), allow_pickle=True)
+        labels_tmp = np.load(os.path.join(ds.datapath, f"{ds.label_filename}{i_file:04d}.npy"), allow_pickle=True)
     else:
         #     t0 = time.time()
         #     print(f"loading file {i_file}", flush=True)
         data = np.load(os.path.join(dataset.datapath, f"{dataset.data_filename}{i_file:04d}.npy"), allow_pickle=True)
+        labels_tmp = np.load(os.path.join(dataset.datapath, f"{dataset.label_filename}{i_file:04d}.npy"), allow_pickle=True)
     
     # Only do bandpass filtering if we are using noisy data
     if dataset_noise:
@@ -43,7 +45,7 @@ def load_file(i_file, norm=1e-6, VALIDATION=False):
         
     data = data[:, :, :, np.newaxis]
 
-    labels_tmp = np.load(os.path.join(dataset.datapath, f"{dataset.label_filename}{i_file:04d}.npy"), allow_pickle=True)
+    
     #     print(f"finished loading file {i_file} in {time.time() - t0}s")
     shower_energy_data = np.array(labels_tmp.item()["shower_energy"])
 
