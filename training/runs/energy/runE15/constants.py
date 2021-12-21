@@ -14,7 +14,7 @@ dataset_name = "SouthPole"
 #         True (default) / False
 dataset_name = "ARZ"
 dataset_em = False
-dataset_noise = False # Set to true when evaluating
+dataset_noise = True # Set to true when evaluating
 
 dataset = datasets.Dataset(dataset_name, dataset_em, dataset_noise)
 
