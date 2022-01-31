@@ -128,6 +128,31 @@ def get_histogram2d(x=None, y=None, z=None,
 
     return fig, ax, im
 
+
+# def calculate_percentage_interval(energy_difference_data, percentage=0.68):
+#     left_percentage = (1 - percentage) / 2 # For example left_percentage = 0.16 for percentage = 0.68
+#     right_percentage = 1 - left_percentage # For example right_percentage = 0.84 for percentage = 0.68
+
+#     # Redefine N
+#     N = energy_difference_data.size
+
+#     idx_left = round(left_percentage * N)
+#     idx_right = round(right_percentage * N)
+
+#     sorted_energy_difference_data = np.sort(energy_difference_data)
+
+#     left_limit = sorted_energy_difference_data[idx_left]
+#     right_limit = sorted_energy_difference_data[idx_right]
+
+#     energy_difference_median = np.median(energy_difference_data)
+
+#     left_abs_diff = np.abs(energy_difference_median - left_limit)
+#     right_abs_diff = np.abs(energy_difference_median - right_limit)
+
+#     energy = (left_abs_diff + right_abs_diff) / 2 # Calculate mean
+
+#     return energy
+
 def calculate_percentage_interval(energy_difference_data, percentage=0.68):
     # Redefine N
     N = energy_difference_data.size
