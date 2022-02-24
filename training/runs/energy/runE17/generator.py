@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 import time
 from toolbox import load_file
-from constants import datapath, data_filename, label_filename, n_files, n_files_val
+from constants import datapath, data_filename, label_filename, n_files, n_files_val, dataset_name, dataset_em, dataset_noise
 # -------
 
 np.set_printoptions(precision=4)
@@ -21,6 +21,44 @@ n_events_per_file = 100000
 batch_size = 64
 
 print(f"training on {n_files_train} files ({n_files_train/n_files*100:.1f}%), validating on {n_files_val} files ({n_files_val/n_files*100:.1f}%), testing on {n_files_test} files ({n_files_test/n_files*100:.1f}%)")
+
+
+# WEIGHTS - WEIGHING BY ENERGY DISTRIBUTION
+MAX_WEIGHT = 10
+
+if dataset_name == "ALVAREZ" and dataset_em == False and dataset_noise == True:
+    dataset_to_use = "ALVAREZ-HAD"
+    
+if dataset_name == "ARZ" and dataset_em == False and dataset_noise == True:
+    dataset_to_use = "ARZ-HAD"
+
+if dataset_name == "ARZ" and dataset_em == True and dataset_noise == True:
+    dataset_to_use = "ARZ-EM"
+    
+with open(f"weights/{dataset_to_use}_weights.npy", "rb") as f:  
+    file_contents = np.load(f)
+    WEIGHTING_energy_list = file_contents[:, 0]
+    WEIGHTING_weight_list = file_contents[:, 1]
+    WEIGHTING_count_list = file_contents[:, 2]
+    
+print("energies: ", WEIGHTING_energy_list)
+print("weights: ", WEIGHTING_weight_list)
+
+# https://stackoverflow.com/questions/2566412/find-nearest-value-in-numpy-array
+def find_nearest_and_return_index(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
+
+def get_weight_by_log10_shower_energy(log10_shower_energy):
+    nearest_idx = find_nearest_and_return_index(WEIGHTING_energy_list, log10_shower_energy)
+
+    weight_for_nearest_idx = WEIGHTING_weight_list[nearest_idx]
+    if weight_for_nearest_idx > MAX_WEIGHT:
+        return MAX_WEIGHT
+    else:
+        return weight_for_nearest_idx
+
 
 class TrainDataset(tf.data.Dataset):
 
