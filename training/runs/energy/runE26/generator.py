@@ -79,7 +79,7 @@ class TrainDataset(tf.data.Dataset):
             y = shower_energy_log10[rand_ids[i_batch * batch_size:(i_batch + 1) * batch_size]]
             x = data[rand_ids[i_batch * batch_size:(i_batch + 1) * batch_size], :, :, :]
             # calculate weights for all the targets
-            sample_weights = [get_weight_by_log10_shower_energy(target) for target in y]
+            sample_weights = [get_weight_by_log10_shower_energy(target)**2 for target in y]
             yield x, y, sample_weights
 
     def __new__(cls, file_id):
