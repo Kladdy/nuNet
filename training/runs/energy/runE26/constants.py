@@ -1,7 +1,7 @@
 import datasets
 
 project_name = "nuNet"
-run_version = "runE17"
+run_version = "runE26"
 dataset_name = "SouthPole"
 
 # Dataset setup
