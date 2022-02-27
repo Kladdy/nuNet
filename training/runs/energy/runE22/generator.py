@@ -108,13 +108,15 @@ class ValDataset(tf.data.Dataset):
             # Reading data (line, record) from the file
             y = shower_energy_log10[rand_ids[i_batch * batch_size:(i_batch + 1) * batch_size]]
             x = data[rand_ids[i_batch * batch_size:(i_batch + 1) * batch_size], :, :, :]
-            yield x, y
+            # calculate weights for all the targets
+            sample_weights = [get_weight_by_log10_shower_energy(target) for target in y]
+            yield x, y, sample_weights
 
     def __new__(cls, file_id):
         return tf.data.Dataset.from_generator(
             cls._generator,
-            output_types=(tf.dtypes.float64, tf.dtypes.float64),
-            output_shapes=((batch_size, 5, 512, 1), (batch_size, )),
+            output_types=(tf.dtypes.float64, tf.dtypes.float64, tf.dtypes.float64),
+            output_shapes=((batch_size, 5, 512, 1), (batch_size, ), (batch_size, )),
             args=(file_id,)
         )
 
