@@ -10,11 +10,8 @@ from NuRadioReco.utilities import units
 import pickle
 # -------
 
-def root_git_dir():
-    return subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8')
-
 def common_dir():
-    return f"{root_git_dir()}/common"
+    return f"common"
 
 def models_dir(run_name):
     return f"{common_dir()}/models/{run_name}"
