@@ -27,7 +27,8 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation, Conv1D, Flatten, Dropout
 from tensorflow.keras.layers import Dense, Conv2D, BatchNormalization, Activation
 from tensorflow.keras.layers import AveragePooling2D, AveragePooling1D, Input, Flatten
-from tensorflow.keras.layers import BatchNormalization, Lambda, MaxPooling2D
+from tensorflow.keras.layers import BatchNormalization, Lambda, MaxPooling2D, Reshape, Conv3D
+from tensorflow.keras.layers import GlobalAveragePooling3D
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.models import Model
@@ -102,10 +103,10 @@ wandb.log({f"dataset_name": dataset_name,
 
 # Model params
 conv2D_filter_size = 5
-pooling_size = 4
+pooling_size = 2
 amount_Conv2D_layers_per_block = 3 
-amount_Conv2D_blocks = 4
-conv2D_filter_amount = 32
+amount_Conv2D_blocks = 2
+conv2D_filter_amount = 64
 activation_function = "relu"
 
 # Send model params to wandb
@@ -136,31 +137,19 @@ for i in range(amount_Conv2D_blocks-1):
     # MaxPooling to reduce size
     model.add(AveragePooling2D(pool_size=(1, pooling_size)))
 
-# Batch normalization
-model.add(BatchNormalization())
+model.add(Reshape((5, 128, 128, 1)))
 
-# Flatten prior to dense layers
-model.add(Flatten())
+model.add(Conv3D(128, (5, 5, 1), strides=(1, 1, 1), padding='same', activation=activation_function))
+model.add(Conv3D(128, (5, 5, 1), strides=(1, 1, 1), padding='same', activation=activation_function))
+model.add(Conv3D(128, (5, 5, 1), strides=(1, 1, 1), padding='same', activation=activation_function))
 
-# Dense layers (fully connected)
-model.add(Dense(1024, activation=activation_function))
-model.add(Dense(1024, activation=activation_function))
-model.add(Dense(512, activation=activation_function))
-model.add(Dense(256, activation=activation_function))
-model.add(Dense(128, activation=activation_function))
-
-# model.add(Dense(512, activation=activation_function))
-# # model.add(Dropout(.1))
-# model.add(Dense(256, activation=activation_function))
-# # model.add(Dropout(.1))
-# model.add(Dense(128, activation=activation_function))
-# # model.add(Dropout(.1))
+model.add(GlobalAveragePooling3D())
 
 # Output layer
 model.add(Dense(1))
 
-model.compile(loss=config.loss_function,
-              optimizer=Adam(lr=config.learning_rate))
+model.compile(loss=loss_function,
+              optimizer=Adam(lr=learning_rate))
 model.summary()
 # ------------------------------------
 
