@@ -18,7 +18,7 @@ list_of_file_ids_train = np.arange(n_files_train, dtype=np.int)
 list_of_file_ids_val = np.arange(n_files_train, n_files_train + n_files_val, dtype=np.int)
 list_of_file_ids_test = np.arange(n_files_train + n_files_val, n_files, dtype=np.int)
 n_events_per_file = 100000
-batch_size = 64
+batch_size = 32
 
 print(f"training on {n_files_train} files ({n_files_train/n_files*100:.1f}%), validating on {n_files_val} files ({n_files_val/n_files*100:.1f}%), testing on {n_files_test} files ({n_files_test/n_files*100:.1f}%)")
 

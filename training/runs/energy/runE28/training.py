@@ -139,13 +139,12 @@ for i in range(amount_Conv2D_blocks-1):
 
 model.add(Reshape((5, 128, 128, 1)))
 
-model.add(Conv3D(128, (5, 5, 1), strides=(1, 1, 1), padding='same', activation=activation_function))
-model.add(Conv3D(128, (5, 5, 1), strides=(1, 1, 1), padding='same', activation=activation_function))
-model.add(Conv3D(128, (5, 5, 1), strides=(1, 1, 1), padding='same', activation=activation_function))
+model.add(Conv3D(32, (5, 5, 1), strides=(1, 1, 1), padding='same', activation=activation_function))
 
 model.add(GlobalAveragePooling3D())
 
 # Output layer
+model.add(Dense(128))
 model.add(Dense(1))
 
 model.compile(loss=loss_function,
