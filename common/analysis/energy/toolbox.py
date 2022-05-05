@@ -251,6 +251,7 @@ def get_2dhist_normalized_columns(X, Y, fig, ax, binsx, binsy, shading='flat', c
 
     vmin, vmax = clim
     pc = ax.pcolormesh(xedges, yedges, H_norm_rows.T, shading=shading, vmin=vmin, vmax=vmax , norm=norm, cmap=cmap)
-    cb = fig.colorbar(pc, ax=ax, orientation='vertical')
+    # cb = fig.colorbar(pc, ax=ax, orientation='vertical')
+    cb = None
 
     return pc, cb
